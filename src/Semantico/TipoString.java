@@ -5,6 +5,8 @@
  */
 package Semantico;
 
+import GCI.GenCode;
+
 /**
  *
  * @author andi
@@ -24,10 +26,23 @@ public class TipoString extends TipoReferencia {
         }
         return false;
     }
-    
+
     @Override
     public boolean check() {
         return true;
+    }
+
+    @Override
+    public void gen(String s) {
+
+        GenCode.gen().write(".DATA");
+
+        String et = GenCode.gen().genLabel();
+
+        GenCode.gen().write("l_str" + et + ": DW " + s + ",0");
+        GenCode.gen().write(".CODE");
+        GenCode.gen().write("PUSH l_str" + et + " # Apilo etiqueta del String");
+
     }
 
 }

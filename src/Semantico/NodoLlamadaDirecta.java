@@ -5,8 +5,8 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Semantico.NodoPrimario;
-import Semantico.Tipo;
 import Token.Token;
 import java.util.Map;
 
@@ -46,16 +46,20 @@ public class NodoLlamadaDirecta extends NodoPrimario {
                 throw new Exception("Faltan parametros en la llamada al metodo " + m.getNombre() + " en la linea " + tok.getLineNumber());
             }
             TipoBase tActual = actual.getExp().check();
-            
-                    
+
             /*        
             if (!tActual.esCompatible(p.getTipoVar())) {
                 throw new Exception("Los tipos de los parametros en la llamada al metodo " + m.getNombre() + " no se corresponden en la linea " + args.getExp().getTok().getLineNumber());
             }
-            */
+             */
             if (!p.getTipoVar().esCompatible(tActual)) {
                 throw new Exception("Los tipos de los parametros en la llamada al metodo " + m.getNombre() + " no se corresponden en la linea " + args.getExp().getTok().getLineNumber());
             }
+
+            if (m.getFormaMetodo().equals("dynamic")) {
+                GenCode.gen().write("SWAP");
+            }
+
             actual = actual.getArgs();
         }
         if (actual != null) {
@@ -83,9 +87,28 @@ public class NodoLlamadaDirecta extends NodoPrimario {
                     }
                 }
 
+                if (!m.getRetorno().getNombre().equals("void")) {
+                    GenCode.gen().write("RMEM 1 # Reservo lugar para el retorno del metodo");
+                    if (m.getFormaMetodo().equals("dynamic")) {
+                        GenCode.gen().write("SWAP");
+                    }
+                }
+
             }
 
             validarArgs(m);
+
+            if (m.getFormaMetodo().equals("static")) {
+                GenCode.gen().write("PUSH " + m.getLabel() + " # Apilo la etiqueta del metodo");
+                GenCode.gen().write("CALL # Llamo al metodo");
+            } else {
+                GenCode.gen().write("LOAD 3 # Cargo THIS");
+                GenCode.gen().write("DUP");
+                GenCode.gen().write("LOADREF 0 # Cargo la VTable");
+                GenCode.gen().write("LOADREF " + m.getOffset() + " # Cargo el metodo " + m.getNombre());
+                GenCode.gen().write("CALL # Llamo al metodo");
+            }
+
             retorno = m.getRetorno();
         } else {
             throw new Exception("El metodo " + tok.getLexema() + " no pertence a la clase " + c.getNombre() + " en la linea " + tok.getLineNumber());
@@ -94,6 +117,27 @@ public class NodoLlamadaDirecta extends NodoPrimario {
             return enca.check(retorno);
         }
         return retorno;
+    }
+
+    public void imprimirArgs(Metodo m) {
+        System.out.println("Metodo: " + m.getNombre());
+        System.out.print("Argumentos: (");
+        Argumentos actual = args;
+        while (actual != null) {
+            if (actual.getExp() != null) {
+                System.out.print(actual.getExp().getTok().getLexema() + ", ");
+            }
+            actual = actual.getArgs();
+        }
+        System.out.println(")");
+
+        Map<String, Parametro> params = m.getParams();
+
+        System.out.print("Parametros: (");
+        for (int i = 0; i < params.size(); i++) {
+            System.out.print(m.getParametro(i).getNombre() + ",");
+        }
+        System.out.println();
     }
 
 }

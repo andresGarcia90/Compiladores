@@ -5,6 +5,7 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import java.util.Map;
 public class NodoLlamadaConClase extends NodoPrimario {
 
     protected Token idClase;
-    //protected Token id;
     protected Argumentos args;
 
     public NodoLlamadaConClase(Token idClase, Token id, Argumentos args) {
@@ -53,11 +53,12 @@ public class NodoLlamadaConClase extends NodoPrimario {
             if (actual.getExp() == null) {
                 throw new Exception("Faltan parametros en la llamada al metodo " + m.getNombre() + " en la linea " + tok.getLineNumber());
             }
-
+            
+            /**
             if (p == null) {
                 //System.out.println("Esto no tendria que haber saltado");
             }
-
+            **/
             TipoBase tipoActual = actual.getExp().check();
 
             if (!tipoActual.esCompatible(p.getTipoVar())) {
@@ -89,6 +90,18 @@ public class NodoLlamadaConClase extends NodoPrimario {
         if (!m.getFormaMetodo().equals("static")) {
             throw new Exception("El metodo " + tok.getLexema() + " no es estatico en la clase " + c.getNombre());
         }
+        
+        
+        /*****************************************GENCODE*******************************************/
+	if(!m.getRetorno().getNombre().equals("void"))
+            GenCode.gen().write("RMEM 1 # Reservo memoria para el retorno del metodo");
+	
+        GenCode.gen().write("PUSH "+m.getLabel()+" # Apilo la etiqueta del metodo");
+	GenCode.gen().write("CALL # Llamo al metodo");
+        /*************************************FIN GENCODE*******************************************/
+		
+        
+        
         if (enca != null) {
             return enca.check(m.getRetorno());
         }

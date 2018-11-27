@@ -5,6 +5,7 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 import analizadorsintactico.AnalizadorSintactico;
 
@@ -39,9 +40,7 @@ class IdIzqEncadenado {
     }
 
     public TipoBase check(TipoBase tipo) throws Exception {
-        
-        
-        
+
         Clase c = AnalizadorSintactico.getTs().getClaseActual();
         String nombreVar = id.getLexema();
         VarInstancia v;
@@ -58,17 +57,22 @@ class IdIzqEncadenado {
                 if (v.getVisibilidad().equals("private")) {
                     throw new Exception("No se puede acceder a la variable " + v.getNombre() + " en la linea " + v.getLinea() + " porque es privada");
                 }
+                GenCode.gen().write("SWAP");
+                GenCode.gen().write("STOREREF " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
             } else {
                 throw new Exception("No se encontro la variable " + nombreVar + " de la linea " + id.getLineNumber());
             }
 
             return v.getTipoVar();
-        } else {
+        } else {//Con Encadenado
 
             if (c.estaVariable(nombreVar)) {
                 v = c.getVariables().get(nombreVar);
                 aux = v.getTipoVar();
                 IdIzqEncadenado id2 = enc;
+
+                GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo variable de instancia " + v.getNombre() + " de la clase " + c.getNombre());
+
                 return id2.check(aux);
             } else {
                 throw new Exception("No se encontro la variable " + nombreVar + " de la linea " + id.getLineNumber());

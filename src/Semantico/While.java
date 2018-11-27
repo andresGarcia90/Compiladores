@@ -5,14 +5,15 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 
 /**
  *
  * @author andi
  */
-public class While extends Sentencia{
-    
+public class While extends Sentencia {
+
     private Sentencia sen;
     private NodoExp exp;
 
@@ -37,17 +38,27 @@ public class While extends Sentencia{
     public void setExp(NodoExp exp) {
         this.exp = exp;
     }
-    
-    
-        
+
     @Override
     public void check() throws Exception {
+
+        String finWhile = "finWhile" + GenCode.gen().genLabel();
+        String lWhile = "while" + GenCode.gen().genLabel();
+        GenCode.gen().write(lWhile + ": NOP # Etiqueta while");
+
         TipoBase tipoExp = exp.check();
-        if(!tipoExp.getNombre().equals("boolean")){
-            throw new Exception("El tipo de la expresion dentro del while en la linea "+ linea+ " no es de tipo boolean");
+        if (!tipoExp.getNombre().equals("boolean")) {
+            throw new Exception("El tipo de la expresion dentro del while en la linea " + linea + " no es de tipo boolean");
         }
-        
+
+        GenCode.gen().write("BF " + finWhile + " # Si es falso salgo del bucle");
+
         sen.check();
+
+        GenCode.gen().write("JUMP " + lWhile + " # Salto al label del while");
+
+        GenCode.gen().write(finWhile + ": NOP # Etiqueta finWhile");
+
     }
-    
+
 }

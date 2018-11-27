@@ -5,6 +5,8 @@
  */
 package Semantico;
 
+import GCI.GenCode;
+
 /**
  *
  * @author andi
@@ -28,6 +30,10 @@ public class Int extends TipoPrimitivo {
     @Override
     public boolean check() {
         return true;
+    }
+
+    public void gen(String s) {
+        GenCode.gen().write("PUSH " + s + " # Apilo el valor " + s);
     }
 
 }

@@ -33,4 +33,8 @@ public class TipoArregloChar extends TipoArreglo {
         return true;
     }
 
+    @Override
+    public void gen(String s) {
+    }
+
 }

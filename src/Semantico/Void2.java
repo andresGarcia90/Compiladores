@@ -28,5 +28,9 @@ public class Void2 extends TipoBase{
     public boolean check() {
         return true;
     }
+
+    @Override
+    public void gen(String s) {
+    }
     
 }

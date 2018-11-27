@@ -5,6 +5,7 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 
 /**
@@ -30,7 +31,10 @@ public class SentSimple extends Sentencia {
 
     @Override
     public void check() throws Exception {
-        exp.check();
+        TipoBase tm = exp.check();
+        if (!tm.getNombre().equals("void")) {
+            GenCode.gen().write("POP");
+        }
     }
 
 }

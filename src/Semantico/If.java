@@ -5,13 +5,14 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 
 /**
  *
  * @author andi
  */
-public class If extends Sentencia{
+public class If extends Sentencia {
 
     protected NodoExp exp;
     protected Sentencia sen;
@@ -37,17 +38,23 @@ public class If extends Sentencia{
     public void setSen(Sentencia sen) {
         this.sen = sen;
     }
-    
-    
-    
-    
+
     @Override
     public void check() throws Exception {
-        
-        if(!exp.check().getNombre().equals("boolean")){
-            throw new Exception("El tipo de la expresion dentro del if en la linea "+ linea+ " no es de tipo boolean");
+
+        if (!exp.check().getNombre().equals("boolean")) {
+            throw new Exception("El tipo de la expresion dentro del if en la linea " + linea + " no es de tipo boolean");
         }
+
+        String finIf = "finIf" + GenCode.gen().genLabel();
+
+        GenCode.gen().write("BF " + finIf + " # Salto si la sentencia es falsa");
+
         sen.check();
+
+        GenCode.gen().write(finIf + ": NOP # Etiqueta fin if");
+        GenCode.gen().nl();
+
     }
-    
+
 }

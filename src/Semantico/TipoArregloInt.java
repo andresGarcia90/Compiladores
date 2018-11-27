@@ -34,4 +34,8 @@ public class TipoArregloInt extends TipoArreglo {
         return true;
     }
 
+    @Override
+    public void gen(String s) {
+    }
+
 }

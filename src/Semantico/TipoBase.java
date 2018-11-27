@@ -45,5 +45,7 @@ public abstract class TipoBase {
     
     
     public abstract boolean check();
+    
+    public abstract void gen(String s);
 
 }

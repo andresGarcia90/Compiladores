@@ -30,4 +30,8 @@ public class TipoNull extends TipoReferencia {
         return true;
     }
 
+    @Override
+    public void gen(String s) {
+    }
+
 }

@@ -5,8 +5,10 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 import java.util.Map;
+import analizadorsintactico.*;
 
 /**
  *
@@ -21,9 +23,11 @@ public class LlamadaEncadenada extends Encadenado {
         this.id = tok;
         this.cadena = enc;
         this.args = args;
-        if(analizadorsintactico.AnalizadorSintactico.getTs().isLadoIzquierdo())
+        if (AnalizadorSintactico.getTs().isLadoIzquierdo()) {
             this.ladoIzq = true;
-        else this.ladoIzq = false;
+        } else {
+            this.ladoIzq = false;
+        }
     }
 
     public Argumentos getArgs() {
@@ -33,50 +37,49 @@ public class LlamadaEncadenada extends Encadenado {
     public void setArgs(Argumentos args) {
         this.args = args;
     }
-    
-    
-    
-    private void validarArgs(Metodo m) throws Exception{
-		
-		Argumentos actual = args;
-		Map<String, Parametro> params = m.getParams();
-		
-		for (int i = 0; i < params.size(); i++) {
-			if(actual == null) {
-				throw new Exception("Cantidad de parametros invalida para el metodo "+m.getNombre()+" en la linea "+args.getExp().getTok().getLineNumber());
-			}
-			Parametro p = m.getParametro(i);
-			if(actual.getExp() == null) {
-				throw new Exception("Faltan parametros en la llamada al metodo "+m.getNombre()+" en la linea "+id.getLineNumber());
-			}
-			TipoBase tActual = actual.getExp().check();
-			if(!tActual.esCompatible(p.getTipoVar())) {
-				throw new Exception("Los tipos de los parametros en la llamada al metodo "+m.getNombre()+" no se corresponden en la linea "+args.getExp().getTok().getLineNumber());
-			}
-			actual = args.getArgs();
-		}
-		
-		if(actual!=null)
-			if(actual.getExp()!=null) {
-				throw new Exception("Cantidad de parametros invalida para el metodo "+m.getNombre()+" en la linea "+args.getExp().getTok().getLineNumber());
-			}
-		
-		
-		
-	}
-    
-    
-    
+
+    private void validarArgs(Metodo m) throws Exception {
+
+        Argumentos actual = args;
+        Map<String, Parametro> params = m.getParams();
+
+        for (int i = 0; i < params.size(); i++) {
+            if (actual == null) {
+                throw new Exception("Cantidad de parametros invalida para el metodo " + m.getNombre() + " en la linea " + args.getExp().getTok().getLineNumber());
+            }
+            Parametro p = m.getParametro(i);
+            if (actual.getExp() == null) {
+                throw new Exception("Faltan parametros en la llamada al metodo " + m.getNombre() + " en la linea " + id.getLineNumber());
+            }
+            TipoBase tActual = actual.getExp().check();
+            if (!tActual.esCompatible(p.getTipoVar())) {
+                throw new Exception("Los tipos de los parametros en la llamada al metodo " + m.getNombre() + " no se corresponden en la linea " + args.getExp().getTok().getLineNumber());
+            }
+
+            if (m.getFormaMetodo().equals("dynamic")) {
+                GenCode.gen().write("SWAP");
+            }
+
+            actual = args.getArgs();
+        }
+
+        if (actual != null) {
+            if (actual.getExp() != null) {
+                throw new Exception("Cantidad de parametros invalida para el metodo " + m.getNombre() + " en la linea " + args.getExp().getTok().getLineNumber());
+            }
+        }
+
+    }
 
     @Override
     public TipoBase check(TipoBase tipo) throws Exception {
         TipoBase ret;
+        //TODO: CHEQUEAR QUE SE LLAME A UNA VARIABLE DESDE EL METODO (ver llamadaVar).
         if (args == null) { //Variable o clase
             if (tipo.getNombre().equals("int") || tipo.getNombre().equals("boolean") || tipo.getNombre().equals("char") || tipo.getNombre().equals("String")) {
                 throw new Exception("La variable " + id.getLexema() + " en la linea " + id.getLineNumber() + " no puede realizar llamadas ya que es de un tipo primitvo");
             }
-            Clase c = analizadorsintactico.AnalizadorSintactico.getTs().getClase(tipo.getNombre());
-
+            Clase c = AnalizadorSintactico.getTs().getClase(tipo.getNombre());
             if (c.estaVariable(id.getLexema())) {
                 Variable var = c.getVariables().get(id.getLexema());
                 ret = var.getTipoVar();
@@ -84,7 +87,7 @@ public class LlamadaEncadenada extends Encadenado {
                 throw new Exception("La variable " + id.getLexema() + " en la linea " + id.getLineNumber() + " no se encuentra declarada en la clase " + c.getNombre());
             }
         } else { //Llamada a un metodo
-            Clase c = analizadorsintactico.AnalizadorSintactico.getTs().getClase(tipo.getNombre());
+            Clase c = AnalizadorSintactico.getTs().getClase(tipo.getNombre());
 
             if (c == null) {
                 throw new Exception("La clase a la que se le esta queriendo pedir el metodo '" + id.getLexema() + "' en la linea " + id.getLineNumber() + " no existe");
@@ -93,16 +96,41 @@ public class LlamadaEncadenada extends Encadenado {
             if (c.estaMetodo(id.getLexema())) {
                 Metodo m = c.getMetodos().get(id.getLexema());
                 //chequear que metodo no sea privado
-                validarArgs(m);
-                if(cadena == null && this.isLadoIzq()){
-                    throw new Exception("No se le puede asignar un valor a un metodo en la linea "+ id.getLineNumber());
+
+                if (!m.getRetorno().getNombre().equals("void")) {
+                    GenCode.gen().write("RMEM 1 # Reservo lugar para el retorno del metodo");
+
+                    if (m.getFormaMetodo().equals("dynamic")) {
+                        GenCode.gen().write("SWAP");
+                    }
                 }
+
+                if (m.getFormaMetodo().equals("static")) {
+                    GenCode.gen().write("POP");
+                }
+
+                validarArgs(m);
+
+                if (cadena == null && this.isLadoIzq()) {
+                    throw new Exception("No se le puede asignar un valor a un metodo en la linea " + id.getLineNumber());
+                }
+
+                if (m.getFormaMetodo().equals("static")) {
+                    GenCode.gen().write("PUSH " + m.getLabel() + " # Apilo la etiqueta del metodo");
+                    GenCode.gen().write("CALL # Llamo al metodo");
+                } else {
+                    GenCode.gen().write("DUP");
+                    GenCode.gen().write("LOADREF 0 # Cargo la VTable");
+                    GenCode.gen().write("LOADREF " + m.getOffset() + " # Cargo el metodo " + m.getNombre());
+                    GenCode.gen().write("CALL # Llamo al metodo");
+                }
+
                 ret = m.getRetorno();
             } else {
                 throw new Exception("El metodo " + id.getLexema() + " en linea " + id.getLineNumber() + " no se encuentra declarado");
             }
         }
-        
+
         if (cadena != null) {
             return cadena.check(ret);
         }

@@ -21,16 +21,20 @@ public class NodoLiteral extends NodoOperando{
     
     @Override
     public Tipo check() throws Exception {
+        
+        Tipo ret;
         switch(tok.getName()){
-            case "entero": return new Int(tok.getLineNumber(), tok.getColumNumber());
-            case "tString": return new TipoString(tok.getLineNumber(), tok.getColumNumber());
-            case "caracter": return new Char(tok.getLineNumber(), tok.getColumNumber());
-            case "null": return new TipoClase(tok.getLineNumber(), tok.getColumNumber(), tok.getLexema());
-            case "true": return new Bool(tok.getLineNumber(), tok.getColumNumber());
-            case "false": return new Bool(tok.getLineNumber(), tok.getColumNumber());
-            default: return null;
+            case "entero":{ ret = new Int(tok.getLineNumber(), tok.getColumNumber()); break;}
+            case "tString":{ ret = new TipoString(tok.getLineNumber(), tok.getColumNumber()); break;}
+            case "caracter":{ ret = new Char(tok.getLineNumber(), tok.getColumNumber()); break;}
+            case "null": {ret = new TipoClase(tok.getLineNumber(), tok.getColumNumber(), tok.getLexema()); break;}
+            case "true": {ret = new Bool(tok.getLineNumber(), tok.getColumNumber()); break;}
+            case "false":{ ret = new Bool(tok.getLineNumber(), tok.getColumNumber()); break;}
+            default: ret = null;
         }
-
+        
+        ret.gen(tok.getLexema());
+        return ret;
     }
     
 }

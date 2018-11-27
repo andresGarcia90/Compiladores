@@ -92,4 +92,8 @@ public class TipoClase extends TipoReferencia {
         return false;
     }
 
+    @Override
+    public void gen(String s) {
+    }
+
 }
