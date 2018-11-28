@@ -1285,7 +1285,7 @@ public class AnalizadorSintactico {
         }
         Encadenado enca = enca();
         //System.out.println("Nodo Primario "+id.getLexema()+id.getName());
-        return new NodoVar(id, enca);
+        return new NodoLlamadaVar(id, enca);
     }
 
     private static NodoPrimario llamadaCtorFactorizado() throws Exception {

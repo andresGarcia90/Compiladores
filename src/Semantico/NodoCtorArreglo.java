@@ -51,7 +51,7 @@ public class NodoCtorArreglo extends NodoCtor{
             return enca.check(new TipoClase(tok.getLineNumber(), tok.getColumNumber(), tok.getLexema()));
         }
 
-        //sSystem.out.println(tok.getLexema());
+        
         if(tok.getLexema().equals("int"))
             return new TipoArregloInt(tok);
         else if (tok.getLexema().equals("char"))

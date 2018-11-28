@@ -405,6 +405,8 @@ public class Clase {
         GenCode.gen().nl();
 
         GenCode.gen().write(".CODE");
+        
+        constructor.chequearSentencias();
 
         for (Metodo m : metodos.values()) {
             analizadorsintactico.AnalizadorSintactico.getTs().setUnidadActual(m);
@@ -417,7 +419,6 @@ public class Clase {
         
         
         analizadorsintactico.AnalizadorSintactico.getTs().setUnidadActual(constructor);
-        constructor.chequearSentencias();
     }
 
     private void setOffsets() {

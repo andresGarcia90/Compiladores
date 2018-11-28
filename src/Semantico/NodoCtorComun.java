@@ -5,6 +5,7 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class NodoCtorComun extends NodoCtor {
     }
 
     public void validarArgs(Ctor c) throws Exception {
-        //TODO: CAMBIE LA PALABRA METODO POR CTOR
+
         Argumentos actual = args;
         Map<String, Parametro> params = c.getParams();
 
@@ -48,11 +49,11 @@ public class NodoCtorComun extends NodoCtor {
             if (!p.getTipoVar().esCompatible(tActual)) {
                 throw new Exception("Los tipos de los parametros en la llamada al ctor " + c.getNombre() + " no se corresponden en la linea " + args.getExp().getTok().getLineNumber());
             }
-            
-            //TODO: POR LAS DUDAS TOQUE ACA
+
             actual = actual.getArgs();
+            GenCode.gen().write("SWAP");
+
             //actual = args.getArgs();
-            
         }
 
         if (actual != null) {
@@ -72,6 +73,15 @@ public class NodoCtorComun extends NodoCtor {
             throw new Exception("En la linea " + tok.getLineNumber() + " la clase " + tok.getLexema() + " no existe");
         }
 
+        GenCode.gen().write("RMEM 1 # Reservo lugar para el constructor de " + c.getNombre());
+        GenCode.gen().write("PUSH " + (c.getVariables().size() + 1) + " # Reservo lugar para variables de instancia y VT de la clase " + c.getNombre());
+        GenCode.gen().write("PUSH lmalloc # Apilo la etiqueta del lmalloc");
+        GenCode.gen().write("CALL # Llamada al metodo malloc");
+        GenCode.gen().write("DUP");
+        GenCode.gen().write("PUSH VT_" + c.getNombre() + " # Apilo direccion de la VTable de la clase " + c.getNombre());
+        GenCode.gen().write("STOREREF 0 # Guardamos la Referencia a la VT en el CIR que creamos");
+        GenCode.gen().write("DUP");
+
         Ctor ctor = c.getConstructor();
 
         validarArgs(ctor);
@@ -80,6 +90,9 @@ public class NodoCtorComun extends NodoCtor {
         if (enca != null) {
             return enca.check(new TipoClase(tok.getLineNumber(), tok.getColumNumber(), tok.getLexema()));
         }
+
+        GenCode.gen().write("PUSH " + ctor.getLabel() + " # Apilo etiqueta del constructor");
+        GenCode.gen().write("CALL # Llamo al constructor");
 
         return new TipoClase(tok.getLineNumber(), tok.getColumNumber(), tok.getLexema());
     }

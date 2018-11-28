@@ -7,6 +7,7 @@ package Semantico;
 
 import GCI.GenCode;
 import Token.Token;
+import analizadorsintactico.AnalizadorSintactico;
 
 /**
  *
@@ -36,6 +37,49 @@ public class NodoVar extends NodoAcceso {
 
     @Override
     public TipoBase check() throws Exception {
+
+        Clase c = AnalizadorSintactico.getTs().getClaseActual();
+        Unidad u = AnalizadorSintactico.getTs().getUnidadActual();
+        Metodo m = c.getMetodos().get(u.getNombre());
+
+        String nombreVar = tok.getLexema();
+
+        Tipo aux;
+        Variable v;
+
+        if (u.estaVar(nombreVar)) {
+            v = u.getVars().get(nombreVar);
+            aux = new TipoClase(v.getLinea(), v.getColumna(), v.getTipoVar().getNombre());
+            if (enca != null) {
+                GenCode.gen().write("LOAD " + v.getOffset() + " # Cargo " + v.getNombre());
+            }
+        } else if (c.estaVariable(nombreVar)) {
+            v = c.getVariables().get(nombreVar);
+            aux = new TipoClase(v.getLinea(), v.getColumna(), v.getTipoVar().getNombre());
+
+            if (enca != null) {
+                GenCode.gen().write("LOAD 3");
+                GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo variable de instancia " + v.getNombre() + " de la clase " + c.getNombre());
+            }
+        } else {
+            throw new Exception("La variable del lado izquierdo de la asignacion no pertence a las variables de instancia o a las variables locales del metodo " + m.getNombre() + " en la linea " + tok.getLineNumber());
+        }
+
+        if (enca != null) {
+
+            return enca.check(aux);
+        } else {
+            if (u.estaVar(nombreVar)) { //Variable local
+                GenCode.gen().write("STORE " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
+            } else {
+                GenCode.gen().write("LOAD 3");
+                GenCode.gen().write("SWAP"); //Swap ya que storeRef utiliza los parametros en orden inverso (1ro CIR, 2do valor a almacenar)
+                GenCode.gen().write("STOREREF " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
+            }
+        }
+        return v.getTipoVar();
+
+        /*
         //System.out.println("NodoVar: Tenemos " + tok.getName());
         Clase c = analizadorsintactico.AnalizadorSintactico.getTs().getClaseActual();
         Unidad u = analizadorsintactico.AnalizadorSintactico.getTs().getUnidadActual();
@@ -49,6 +93,7 @@ public class NodoVar extends NodoAcceso {
             if (m.estaVar(nombreVar)) {
                 v = m.getVars().get(nombreVar);
                 ret = v.getTipoVar();
+                
                 GenCode.gen().write("LOAD " + v.getOffset() + " # Cargo el valor de la variable " + v.getNombre());
 
             } else {
@@ -71,13 +116,16 @@ public class NodoVar extends NodoAcceso {
             if (enca != null) {
                 ret = enca.check(ret);
             } else {
-                if (m.estaVar(nombreVar)) { //Variable local
-                    GenCode.gen().write("STORE " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
-                } else {
-                    GenCode.gen().write("LOAD 3");
-                    GenCode.gen().write("SWAP"); //Swap ya que storeRef utiliza los parametros en orden inverso (1ro CIR, 2do valor a almacenar)
-                    GenCode.gen().write("STOREREF " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
+                if (this.ladoIzq) {
+                    if (m.estaVar(nombreVar)) { //Variable local
+                        GenCode.gen().write("STORE " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
+                    } else {
+                        GenCode.gen().write("LOAD 3");
+                        GenCode.gen().write("SWAP"); //Swap ya que storeRef utiliza los parametros en orden inverso (1ro CIR, 2do valor a almacenar)
+                        GenCode.gen().write("STOREREF " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
+                    }
                 }
+
             }
 
             if (ret instanceof TipoArreglo && v.getTipoVar() instanceof TipoClase) {
@@ -116,6 +164,10 @@ public class NodoVar extends NodoAcceso {
         }
 
         return ret;
+        
+        
+        
+         */
     }
 
 }
