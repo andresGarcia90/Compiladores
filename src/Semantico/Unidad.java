@@ -26,6 +26,7 @@ public abstract class Unidad {
     protected int offset = 99;
     protected int offParam;
     protected int offVar;
+    protected boolean esConstructor = false;
 
     public String getNombre() {
         return nombre;
@@ -131,6 +132,14 @@ public abstract class Unidad {
         this.label = label;
     }
 
+    public boolean isEsConstructor() {
+        return esConstructor;
+    }
+
+    public void setEsConstructor(boolean esConstructor) {
+        this.esConstructor = esConstructor;
+    }
+    
     public Parametro getParametro(int i) {
         for (Parametro p : params.values()) {
             if (p.getPosicion() == i) {

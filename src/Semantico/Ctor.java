@@ -24,6 +24,7 @@ public class Ctor extends Unidad {
         params = new HashMap<String, Parametro>();
         vars = new HashMap<String, Variable>();
         predefinido = true;
+        this.esConstructor = true;
     }
 
     public boolean isPredefinido() {
