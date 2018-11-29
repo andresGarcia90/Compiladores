@@ -263,6 +263,8 @@ public class Clase {
                                 //Tipo de salida
                                 if (!m.getRetorno().esCompatible(actual.getRetorno())) {
                                     throw new Exception("Error Semantico: El metodo " + m.getNombre() + " esta mal redefinido (Su retorno no coincide)");
+                                }else{
+                                    actual.setOffset(m.getOffset());
                                 }
 
                             } else {
@@ -386,9 +388,12 @@ public class Clase {
         GenCode.gen().write(".DATA");
 
         String ls = "DW ";
+        
+                        System.out.println(nombre+": Cantidad de metodos "+cantMetDyn);
 
         for (int i = 0; i < cantMetDyn; i++) {
             for (Metodo m : metodos.values()) {
+                    System.out.println("met: "+m.getLabel()+ " off: "+m.getOffset());
                 if (m.getOffset() == i) {
                     ls += m.getLabel() + ",";
                 }
