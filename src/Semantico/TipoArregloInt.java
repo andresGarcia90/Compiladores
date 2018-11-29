@@ -5,6 +5,7 @@
  */
 package Semantico;
 
+import GCI.GenCode;
 import Token.Token;
 
 /**
@@ -17,6 +18,7 @@ public class TipoArregloInt extends TipoArreglo {
         linea = tok.getLineNumber();
         columna = tok.getColumNumber();
         nombre = "arregloInt";
+        
 
     }
 

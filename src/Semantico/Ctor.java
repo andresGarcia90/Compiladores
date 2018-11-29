@@ -51,38 +51,7 @@ public class Ctor extends Unidad {
 
     }
 
-    public void chequearSentencias() throws Exception {
-
-        /**
-         * ********************GenCode***************************
-         */
-        GenCode.gen().write(getLabel() + ": NOP # CONSTRUCTOR " + nombre);
-
-        GenCode.gen().inicioUnidad();
-
-        /**
-         * **********************Fin GenCode***************************
-         */
-        /**
-         * **********************Chequeo Sentencias***************************
-         */
-        //System.out.println("Metodo "+nombre+" offvar "+offVar);
-        setOffVar(0);//???????????????
-
-        if (cuerpo != null) {
-            cuerpo.check();
-        }
-        /**
-         * *******************Fin Chequeo Sentencias***************************
-         */
-
-        GenCode.gen().write("STOREFP # Restablezco el contexto");
-
-        GenCode.gen().write("RET " + (params.size() + 1) + " # Retorno y libero espacio de los parametros del metodo y del THIS " + nombre);
-
-        GenCode.gen().nl();
-
-    }
+   
 
     private int cantParams() {
         return this.getParams().size();

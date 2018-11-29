@@ -411,7 +411,7 @@ public class Clase {
 
         GenCode.gen().write(".CODE");
         AnalizadorSintactico.getTs().setUnidadActual(constructor);
-        constructor.chequearSentencias();
+        constructor.chequearSentencia();
 
         for (Metodo m : metodos.values()) {
             analizadorsintactico.AnalizadorSintactico.getTs().setUnidadActual(m);

@@ -40,7 +40,8 @@ public class NodoLlamadaVar extends NodoPrimario {
                 v = c.getVariables().get(nombreVar);
                 ret = v.getTipoVar();
                 GenCode.gen().write("LOAD 3 # Cargo This");
-                GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo el valor de la variable");
+                int offset = v.getOffset() + 1;
+                GenCode.gen().write("LOADREF " + offset+ " # Cargo el valor de la variable");
 
             } else {
                 throw new Exception("La variable " + nombreVar + " en la linea " + tok.getLineNumber() + " no esta definida");
