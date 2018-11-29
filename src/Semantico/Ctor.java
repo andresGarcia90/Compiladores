@@ -46,7 +46,7 @@ public class Ctor extends Unidad {
             p.controlDeclaraciones();
 
             p.setOffset(2 + cantParams() - p.getPosicion()); //3+cantParams-nroParam
-
+            vars.put(p.getNombre(), p);
         }
 
     }
