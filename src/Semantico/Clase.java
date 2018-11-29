@@ -410,7 +410,7 @@ public class Clase {
         GenCode.gen().nl();
 
         GenCode.gen().write(".CODE");
-        
+        AnalizadorSintactico.getTs().setUnidadActual(constructor);
         constructor.chequearSentencias();
 
         for (Metodo m : metodos.values()) {

@@ -35,9 +35,10 @@ public class AnalizadorSintactico {
         t = new Token("", "", 0, 0);
 
         //alex = new ALex(args[0]);
-        //alex = new ALex("/home/andi/ejemplo");
-        alex = new ALex("C:\\Users\\Meltman\\Desktop\\inout\\prueba.java");
-        GenCode.path = "C:\\Users\\Meltman\\Desktop\\inout\\out.ceiasm";
+        //alex = new ALex("C:\\Users\\Meltman\\Desktop\\inout\\prueba.java");
+        //GenCode.path = "C:\\Users\\Meltman\\Desktop\\inout\\out.ceiasm";
+        alex = new ALex("/home/andi/ejemplo");
+        GenCode.path = "/home/andi/out.ceiasm";
 
         inicializar();
         try {
