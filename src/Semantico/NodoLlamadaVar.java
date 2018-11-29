@@ -33,14 +33,15 @@ public class NodoLlamadaVar extends NodoPrimario {
             if (u.estaVar(nombreVar)) {
                 v = u.getVars().get(nombreVar);
                 ret = v.getTipoVar();
-                GenCode.gen().write("LOAD " + v.getOffset() + " # Cargo el valor de la variable " + v.getNombre());
+                int offset = v.getOffset() + 1;
+                GenCode.gen().write("LOAD " + offset + " # Cargo el valor de la variable " + v.getNombre());
             } else if (c.estaVariable(nombreVar)) {
-                
-                    v = c.getVariables().get(nombreVar);
-                    ret = v.getTipoVar();
-                    GenCode.gen().write("LOAD 3 # Cargo This");
-                    GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo el valor de la variable");
-                
+
+                v = c.getVariables().get(nombreVar);
+                ret = v.getTipoVar();
+                GenCode.gen().write("LOAD 3 # Cargo This");
+                GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo el valor de la variable");
+
             } else {
                 throw new Exception("La variable " + nombreVar + " en la linea " + tok.getLineNumber() + " no esta definida");
             }
