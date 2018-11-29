@@ -43,8 +43,18 @@ public class IdEncadenado extends Encadenado {
 
             if (c.getVariables().containsKey(nombreVar)) {
                 v = c.getVariables().get(nombreVar);
+                if (v.getVisibilidad().equals("private")) {
+                    throw new Exception("No se puede acceder a la variable " + v.getNombre() + " de la linea " + v.getLinea() + " debido a que su visibilidad es privada");
+                }
+                //TODO: 29/11/18: 1722
+                if (this.ladoIzq) {
+                    GenCode.gen().write("SWAP");
+                    GenCode.gen().write("STOREREF " + v.getOffset() + " # Guardo el valor en la variable " + v.getNombre());
 
-                GenCode.gen().write("LOADREF "+v.getOffset()+" # Cargo variable de instancia "+v.getNombre()+" de la clase "+c.getNombre());
+                } else {
+                    GenCode.gen().write("LOADREF " + v.getOffset() + " # Cargo variable de instancia " + v.getNombre() + " de la clase " + c.getNombre());
+
+                }
 
             } else {
                 throw new Exception("No se encontro la variable " + nombreVar + " de la linea " + id.getLineNumber() + " en la clase " + c.getNombre());
