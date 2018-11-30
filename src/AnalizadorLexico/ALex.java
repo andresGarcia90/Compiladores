@@ -108,7 +108,7 @@ public class ALex {
                         } else if (c == '%') {//modulo
                             ci = s.read();
                             numColumna++;
-                            System.out.println(numColumna);
+                           // System.out.println(numColumna);
                             return new Token("modulo", "%", numLinea, numColumnaAux);
                         } else if (c == ')') { //parentesisCierra
                             lexema += c;

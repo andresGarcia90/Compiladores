@@ -389,11 +389,11 @@ public class Clase {
 
         String ls = "DW ";
         
-                        System.out.println(nombre+": Cantidad de metodos "+cantMetDyn);
+                        //System.out.println(nombre+": Cantidad de metodos "+cantMetDyn);
 
         for (int i = 0; i < cantMetDyn; i++) {
             for (Metodo m : metodos.values()) {
-                    System.out.println("met: "+m.getLabel()+ " off: "+m.getOffset());
+                    //System.out.println("met: "+m.getLabel()+ " off: "+m.getOffset());
                 if (m.getOffset() == i) {
                     ls += m.getLabel() + ",";
                 }

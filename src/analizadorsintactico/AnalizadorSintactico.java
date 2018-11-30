@@ -34,13 +34,17 @@ public class AnalizadorSintactico {
     public static void main(String[] args) {
         t = new Token("", "", 0, 0);
 
-        //alex = new ALex(args[0]);
-        alex = new ALex("C:\\Users\\Meltman\\Desktop\\inout\\prueba.java");
-        GenCode.path = "C:\\Users\\Meltman\\Desktop\\inout\\out.ceiasm";
-       
+        alex = new ALex(args[0]);
+        //alex = new ALex("C:\\Users\\Meltman\\Desktop\\inout\\prueba.java");
+        //GenCode.path = "C:\\Users\\Meltman\\Desktop\\inout\\out.ceiasm";
+
         //alex = new ALex("/home/andi/ejemplo");
         //GenCode.path = "/home/andi/out.ceiasm";
-
+        if (args.length == 2) {
+            GenCode.path = args[1];
+        } else {
+            GenCode.path = System.getProperty("user.dir") + "/out.ceiasm";
+        }
         inicializar();
         try {
             t = alex.getToken();
