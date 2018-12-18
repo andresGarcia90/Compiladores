@@ -12,6 +12,7 @@ import Token.Token;
 public class ALex {
     
     String filename;
+    
     int estado;
     BufferedReader s;
     int numLinea;
