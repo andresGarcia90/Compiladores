@@ -25,7 +25,7 @@ public class VarLocal extends VarMetodo{
     @Override
     public void controlDeclaraciones() throws Exception{
         if(!tipoVar.check()){
-            throw new Exception("El tipo de la variable declarada en la linea "+linea+" no existe");
+            throw new Exception("El tipo de la variable local "+ nombre +" declarada en la linea "+ linea +" no existe ("+tipoVar.getNombre()+")");
         }
 
     }

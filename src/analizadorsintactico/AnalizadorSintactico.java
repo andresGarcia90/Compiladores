@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package analizadorsintactico;
 
 import AnalizadorLexico.ALex;
@@ -26,25 +22,26 @@ public class AnalizadorSintactico {
     private static Token t;
     private static ALex alex;
     private static TablaSimbolos ts;
-    //private static boolean procesandoAsignacion;
 
     /**
-     * @param args the command line arguments
+     * @param args Lista de argumentos pasados por parametro.
      */
     public static void main(String[] args) {
         t = new Token("", "", 0, 0);
 
-        alex = new ALex(args[0]);
+        //alex = new ALex(args[0]);
         //alex = new ALex("C:\\Users\\Meltman\\Desktop\\inout\\prueba.java");
         //GenCode.path = "C:\\Users\\Meltman\\Desktop\\inout\\out.ceiasm";
-
-        //alex = new ALex("/home/andi/ejemplo");
-        //GenCode.path = "/home/andi/out.ceiasm";
+        alex = new ALex("/home/andi/ejemplo");
+        GenCode.path = "/home/andi/outNuevo.ceiasm";
+        
+        /*
         if (args.length == 2) {
             GenCode.path = args[1];
         } else {
-            GenCode.path = System.getProperty("user.dir") + "/out.ceiasm";
+            GenCode.path = System.getProperty("user.dir") + "/outNuevo.ceiasm";
         }
+*/
         inicializar();
         try {
             t = alex.getToken();
@@ -608,8 +605,6 @@ public class AnalizadorSintactico {
         Bloque b = bloque();
         Unidad uni = ts.getUnidadActual();
         uni.setCuerpo(b);
-
-        //ts.getUnidadActual().setCuerpo(bloque());
     }
 
     private static void metodo() throws Exception {
@@ -768,7 +763,6 @@ public class AnalizadorSintactico {
             Sentencia sen = sentencia();
             ts.getBloqueActual().agregarSentencia(sen);
             s();
-            // System.out.println(t.getName());
         } else if (!siguientes.get("s").contains(t.getName())) {
             throw new Exception("Error sintactico: Se esperaba una llave que cierre");
         }
@@ -801,12 +795,9 @@ public class AnalizadorSintactico {
             NodoExp exp = exp();
             match("puntoYComa");
             return new Return(aux, exp);
-            //TODO: LOGRO DEL RETURN  
         } else if (primeros.get("asignacion").contains(lexema)) {
-            //procesandoAsignacion = true;
             Asignacion a = asignacion();
             match("puntoYComa");
-            //procesandoAsignacion = false;
             return a;
         } else if (primeros.get("sentenciaLlamada").contains(lexema)) {
             Sentencia sen = sentenciaDeLlamada();
@@ -841,12 +832,6 @@ public class AnalizadorSintactico {
             return new Else(aux, exp, sen, sen2);
 
         }
-        /*
-        else if (!siguientes.get("sentenciaFact").contains(t.getName())) {
-            throw new Exception("Error sintactico: Se esperaba 'else' o '}' pero se encontro: " + t.getLexema() + " en linea: " + t.getLineNumber());
-
-        }
-         */
         return new If(aux, exp, sen);
     }
 

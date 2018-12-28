@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Semantico;
 
 import Token.Token;
@@ -21,7 +17,6 @@ public class NodoExpBinaria extends NodoExp {
         tok = token;
         this.e1 = e1;
         this.e2 = e2;
-        //System.out.println("NODO EXPRESION BINARIA: "+tok.getLexema());
     }
 
     public NodoExp getE1() {
@@ -42,7 +37,6 @@ public class NodoExpBinaria extends NodoExp {
 
     @Override
     public Tipo check() throws Exception {
-        // System.out.println("Operador: "+ tok.getName());
         String operador = tok.getLexema();
         TipoBase tipoI = e1.check();
         TipoBase tipoD = e2.check();

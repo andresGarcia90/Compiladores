@@ -60,28 +60,19 @@ public class Ctor extends Unidad {
     @Override
     public void chequearSentencia() throws Exception {
         
-        /**
-         * ********************GenCode***************************
-         */
+        /*****************************GenCode********************************/
         GenCode.gen().write(getLabel() + ": NOP # CONSTRUCTOR " + nombre);
 
         GenCode.gen().inicioUnidad();
 
-        /**
-         * **********************Fin GenCode***************************
-         */
-        /**
-         * **********************Chequeo Sentencias***************************
-         */
-        //System.out.println("Metodo "+nombre+" offvar "+offVar);
-        setOffVar(0);//???????????????
+        /***************************Fin GenCode******************************/
+        /************************Chequeo Sentencias**************************/
+        setOffVar(0);
 
         if (cuerpo != null) {
             cuerpo.check();
         }
-        /**
-         * *******************Fin Chequeo Sentencias***************************
-         */
+        /*********************Fin Chequeo Sentencias**************************/
 
         GenCode.gen().write("STOREFP # Restablezco el contexto");
 

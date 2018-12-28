@@ -54,11 +54,6 @@ public class NodoLlamadaConClase extends NodoPrimario {
                 throw new Exception("Faltan parametros en la llamada al metodo " + m.getNombre() + " en la linea " + tok.getLineNumber());
             }
             
-            /**
-            if (p == null) {
-                //System.out.println("Esto no tendria que haber saltado");
-            }
-            **/
             TipoBase tipoActual = actual.getExp().check();
 
             if (!tipoActual.esCompatible(p.getTipoVar())) {
@@ -72,7 +67,6 @@ public class NodoLlamadaConClase extends NodoPrimario {
             }
         }
     }
-    //TODO: CHEQUEAR ESTO!!!! QUE PASA SI EL METODO ES VOID??
     @Override
     public TipoBase check() throws Exception {
         Clase c = analizadorsintactico.AnalizadorSintactico.getTs().getClase(idClase.getLexema());

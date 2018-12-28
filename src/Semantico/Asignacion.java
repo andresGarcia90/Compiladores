@@ -20,7 +20,6 @@ public class Asignacion extends Sentencia {
         this.lder = expresion;
         this.lizq = idIzquierdo;
         linea = token.getLineNumber();
-        //System.out.println("ASIGNACION: "+lder.getTok().getName()+" "+ lizq.getTok().getName());
     }
 
     public NodoExp getExpresion() {
@@ -46,11 +45,7 @@ public class Asignacion extends Sentencia {
         if (lizq instanceof NodoThis && this.lizq.getEnca() == null) {
             throw new Exception("No se puede asignar nada a un this en la linea " + this.linea);
         }
-/*
-        if (lizq.getEnca() instanceof LlamadaEncadenada) {
-            throw new Exception("No se le puede asignar un valor a una llamada a un metodo en la linea " + this.getLinea());
-        }
-*/
+
         TipoBase tipoLi = lizq.check();
 
         if (!tipoLi.esCompatible(tipoExp)) {

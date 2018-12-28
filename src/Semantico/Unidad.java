@@ -61,10 +61,8 @@ public abstract class Unidad {
     }
 
     public void agregarParam(Token aux, Tipo tipo) throws Exception {
-        //TODO: CHEQUEAR AGREGAR PARAM EN UNIDAD
         if (!params.containsKey(aux.getLexema())) {
             Parametro p = new Parametro(aux.getLexema(), aux.getLineNumber(), aux.getColumNumber(), params.size(), tipo);
-            //p.setTipoVar(tipo);
             params.put(aux.getLexema(), p);
 
         } else {
@@ -169,16 +167,6 @@ public abstract class Unidad {
         }
     }
 
-    /*
-    public void chequearSentencia() throws Exception {
-
-        if (analizadorsintactico.AnalizadorSintactico.getTs().getClaseActual().getNombre().equals(declaradoEn.getNombre())) {
-            if (cuerpo != null) {
-                cuerpo.check();
-            }
-        }
-    }
-*/
     
     public abstract void chequearSentencia() throws Exception;
 

@@ -27,7 +27,6 @@ public class Clase {
     private Ctor constructor;
     private boolean constructorPredefinido;
     private int linea, columna;
-    private boolean mainDeclarado = false;
     private int cantMetDyn = 0;
 
     public Clase(Token t) {
@@ -151,16 +150,13 @@ public class Clase {
     }
 
     public void agregarMetodo(Metodo m) throws Exception {
-        //TODO: Aca chequear si el metodo tiene cantidades distintas de parametros.. entonces si se puede agregar.
         if (!metodos.containsKey(m.getNombre())) {
             metodos.put(m.getNombre(), m);
             if (m.getFormaMetodo().equals("dynamic")) {
                 cantMetDyn++;
             }
         } else {
-            m.getLinea();
-            m.getColumna();
-            metodos.get(m.getNombre()).getLinea();
+
             throw new Exception("Error Semantico: En linea " + m.getLinea() + " el metodo " + m.getNombre() + " ya fue creado en linea " + metodos.get(m.getNombre()).getLinea());
         }
     }
@@ -186,7 +182,6 @@ public class Clase {
 
     public void agregarVariable(String k, VarInstancia v) throws Exception {
         if (!variables.containsKey(v.getNombre())) {
-            //System.out.println(v.getNombre());
             variables.put(k, v);
         } else {
             throw new Exception("Error Semantico: La variable " + v.getNombre() + " ya existente en la linea " + variables.get(v.getNombre()).getLinea());
@@ -235,15 +230,12 @@ public class Clase {
 
                 for (VarInstancia v : padre.getVariables().values()) {
                     String nv = v.getNombre();
-                    //   System.out.println("nombre: "+v.nombre+ " cant "+v.linea);
                     while (estaVariable(nv)) {
                         nv = "#" + nv;
                     }
-
                     if (v.getVisibilidad().equals("private")) {
                         nv = "@" + nv;
                     }
-
                     agregarVariable(nv, v);
                 }
 
@@ -263,7 +255,7 @@ public class Clase {
                                 //Tipo de salida
                                 if (!m.getRetorno().esCompatible(actual.getRetorno())) {
                                     throw new Exception("Error Semantico: El metodo " + m.getNombre() + " esta mal redefinido (Su retorno no coincide)");
-                                }else{
+                                } else {
                                     actual.setOffset(m.getOffset());
                                 }
 
@@ -279,8 +271,6 @@ public class Clase {
                         //En caso de que no este redefinido lo agrego al metodo hijo
                         //Si es el constructor no lo agrego
                         if (!m.getNombre().equals(padre.getNombre())) {
-
-                            //TODO: OJOOOO CON ESTO, el comentado es de la anterior entrega.
                             // agregarMetodo("@" + m.getNombre(), m);
                             agregarMetodo(m.getNombre(), m);
                         }
@@ -298,19 +288,14 @@ public class Clase {
     }
 
     private void setOffsetsMetodos() {
-
         Clase padre = AnalizadorSintactico.getTs().getClase(hereda);
-
         int cantMetodosPadre = AnalizadorSintactico.getTs().getClase(hereda).getCantMetDyn();
-
-        //System.out.println("Clase "+nombre+" cant de metodos de mi padre "+cantMetodosPadre);
         for (String s : metodos.keySet()) {
             if (s.charAt(0) != '@') {
                 Metodo m = metodos.get(s);
                 if (!m.getNombre().equals(nombre) && !m.getFormaMetodo().equals("static")) {
                     if (!padre.estaMetodo(m)) {
                         m.setOffset(cantMetodosPadre++);
-                        //System.out.println("Clase "+nombre);
                     }
                 }
             }
@@ -340,16 +325,12 @@ public class Clase {
             if (metodos.containsKey(v.getNombre())) {
                 throw new Exception("En la linea " + v.getLinea() + " la variable " + v.getNombre() + " tiene el mismo nombre que el metodo de la linea " + metodos.get(v.getNombre()).getLinea());
             }
-            if (!v.getTipoVar().check()) {
-                throw new Exception("Error: la variable '" + v.getNombre() + "' en la linea " + v.getLinea() + " esta declarada de un tipo inexistente (" + v.getTipoVar().getNombre() + ").");
-
-            }
+            v.controlDeclaraciones();
         }
     }
 
     private void chequearMetodos() throws Exception {
         for (Metodo m : metodos.values()) {
-            //m.chequearSentencia();
             m.controlDeclaraciones();
             if (m.getNombre().equals("main")) {
                 if (!m.getFormaMetodo().equals("static")) {
@@ -388,12 +369,9 @@ public class Clase {
         GenCode.gen().write(".DATA");
 
         String ls = "DW ";
-        
-                        //System.out.println(nombre+": Cantidad de metodos "+cantMetDyn);
 
         for (int i = 0; i < cantMetDyn; i++) {
             for (Metodo m : metodos.values()) {
-                    //System.out.println("met: "+m.getLabel()+ " off: "+m.getOffset());
                 if (m.getOffset() == i) {
                     ls += m.getLabel() + ",";
                 }
@@ -414,16 +392,14 @@ public class Clase {
         constructor.chequearSentencia();
 
         for (Metodo m : metodos.values()) {
-            analizadorsintactico.AnalizadorSintactico.getTs().setUnidadActual(m);
+            AnalizadorSintactico.getTs().setUnidadActual(m);
             m.chequearSentencia();
-           // m.controlDeclaraciones();
             if (!m.getRetorno().getNombre().equals("void") && !m.getTieneReturn()) {
                 throw new Exception("El metodo " + m.getNombre() + " debe retornar algo de tipo " + m.getRetorno().getNombre() + " en la linea " + m.getLinea());
             }
         }
-        
-        
-        analizadorsintactico.AnalizadorSintactico.getTs().setUnidadActual(constructor);
+        //TODO: CHEQUEAR ESTO
+        AnalizadorSintactico.getTs().setUnidadActual(constructor);
     }
 
     private void setOffsets() {
@@ -432,7 +408,6 @@ public class Clase {
         int cantAtrPadre = padre.getVariables().size();
 
         for (Variable v : variables.values()) {
-            //cantAtrPadre++;
             v.setOffset(++cantAtrPadre);
 
         }

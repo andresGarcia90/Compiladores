@@ -47,11 +47,10 @@ public class Parametro extends VarMetodo {
         this.posicion = posicion;
     }
 
-    //TODO: PARAMETRO
     @Override
     public void controlDeclaraciones() throws Exception {
         if (!tipoVar.check()) {
-            throw new Exception("Error, tipo de parametro '" + tipoVar.getNombre() + "' invalido en linea " + linea);
+            throw new Exception("El tipo del parametro '" + tipoVar.getNombre() + "' es invalido en linea " + linea +" ("+tipoVar+")");
         }
     }
 

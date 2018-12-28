@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class TipoClase extends TipoReferencia {
 
     public TipoClase(int l, int c, String n) {
-        //System.out.println("Tipo Clase: " + n);
         linea = l;
         columna = c;
         nombre = n;
@@ -24,7 +23,6 @@ public class TipoClase extends TipoReferencia {
     @Override
     public boolean esCompatible(TipoBase tipo) throws Exception {
 
-        //System.out.println("El tipo Clase: "+this.getNombre()+" El tipo pasado por param: "+tipo.getNombre());
         if (!this.getNombre().equals("null")) {
             if (tipo.getNombre().equals("null")) {
                 return true;
@@ -44,22 +42,15 @@ public class TipoClase extends TipoReferencia {
                         claseThis = AnalizadorSintactico.getTs().getClase(claseThis.getHereda());
                     }
                     return false;
-                    //throw new Exception("El tipo " + nombre + " no es compatible con " + tipo.getNombre() + " en la linea " + linea);
                 } else {
                     return false;
-                    //throw new Exception("El tipo " + tipo.getNombre() + " no existe, en la linea " + linea);
                 }
             } else {
                 return false;
-                // throw new Exception("El tipo " + nombre + " no existe, en la linea " + linea);
 
             }
-            
-            
-
         } else {
             return false;
-            //throw new Exception("El tipo null no es compatible en la linea " + nombre);
         }
         
 

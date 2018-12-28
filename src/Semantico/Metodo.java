@@ -141,37 +141,30 @@ public class Metodo extends Unidad {
     }
 
     public void chequearSentencia() throws Exception {
-        if (analizadorsintactico.AnalizadorSintactico.getTs().getClaseActual().getNombre().equals(this.declaradoEn.getNombre())) {
+        if (AnalizadorSintactico.getTs().getClaseActual().getNombre().equals(this.declaradoEn.getNombre())) {
 
-            /**********************GenCode****************************/
-          
-          
+            /*****************************GenCode**********************************/
           
             GenCode.gen().write(getLabel() + ": NOP # METODO " + nombre);
             GenCode.gen().inicioUnidad();
 
-            /************************Fin GenCode****************************/
+            /****************************Fin GenCode*******************************/
             /************************Chequeo Sentencias****************************/
-            //System.out.println("Metodo "+nombre+" offvar "+offVar);
-            setOffVar(0);//???????????????
+            setOffVar(0);
 
             if (cuerpo != null) {
                 cuerpo.check();
             }
-
-            /**
-             * *******************Fin Chequeo Sentencias***************************
-             */
-            /**
-             * ********************GenCode***************************
-             */
+            /*********************Fin Chequeo Sentencias****************************/
+            
+            
+            
+            /******************************GenCode**********************************/
             GenCode.gen().write("STOREFP # Restablezco el contexto");
 
-            if (formaMetodo.equals("static") && !nombre.equals(declaradoEn.getNombre())) { //Si es estatico y no es el constructor
-
+            if (formaMetodo.equals("static") && !nombre.equals(declaradoEn.getNombre())) { //Si es estatico 
                 GenCode.gen().write("RET " + params.size() + " # Retorno y libero espacio de los parametros del metodo " + nombre);
-            } else { //Si es dinamico o es constructor
-
+            } else { //Si es dinamico 
                 GenCode.gen().write("RET " + (params.size() + 1) + " # Retorno y libero espacio de los parametros del metodo y del THIS " + nombre);
             }
 
